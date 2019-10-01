@@ -1,0 +1,706 @@
+<div class="page-content container-fluid page-profile">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Page Widget -->
+            <div class="widget widget-shadow text-center">
+                <div class="widget-header">
+                    <div class="widget-header-content">
+                        <a class="avatar avatar-lg" href="javascript:void(0)">
+                            <!--img src="/img/avatar2.png" alt="..."-->
+                            <img ng-src="http://savio.utb.edu.co/user/external_render_pic.php?user=uws1&pass=uws1&wsusername={{estudiante.ID}}"
+                                 alt="...">
+                            <!--img src="http://savio.utb.edu.co/user/external_user_pic.php/{{estudiante.codigo}}/f1" alt="..."-->
+                        </a>
+                        <h4 class="profile-user">{{estudiante.NOMBRES+ ' '+estudiante.APELLIDOS}}</h4>
+                        <p class="profile-job">{{estudiante.PROGRAMA}}</p>
+                        <address>
+                            <strong>Informacion de contacto</strong>
+                            <br><abbr title="Direccion">Direccion:</abbr> {{estudiante.DIRECCION1}}
+                            <br> <abbr title="Correo">Correo:</abbr><a href="mailto:{{estudiante.EMAIL}}">
+                            {{estudiante.EMAIL}}</a>
+                            <br>
+                            <abbr title="Telefono">Telefono: </abbr> {{estudiante.TELEFONO2}}
+                        </address>
+
+                    </div>
+                </div>
+                <div class="widget-footer">
+                    <div class="row no-space">
+                        <div class="col-xs-4">
+                            <strong class="profile-stat-count">Codigo</strong>
+                            <span>{{estudiante.ID}}</span>
+                        </div>
+                        <div class="col-xs-4">
+                            <strong class="profile-stat-count">Edad</strong>
+                            <span>{{getEdad(estudiante.FECHA_NACIMENTO)}}</span>
+
+                        </div>
+                        <div class="col-xs-4">
+                            <strong class="profile-stat-count">Sexo</strong>
+                            <span>{{estudiante.SEXO}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Page Widget -->
+
+            <section class="page-aside-section">
+                <h5 class="page-aside-title">Anotaciones</h5>
+                <div class="list-group calendar-list">
+                    <a ng-repeat="anotacion in anotaciones" class="list-group-item calendar-event ui-draggable ui-draggable-handle" data-title="Meeting" data-stick="true" data-color="red-600" href="javascript:void(0)">
+                        <i class="wb-medium-point red-600 mr-10" aria-hidden="true"></i>{{anotacion.propiedad}}
+                    </a>
+
+                    <a id="addNewEventBtn" class="list-group-item" href="javascript:void(0)"> <i class="icon wb-plus" aria-hidden="true"></i> Agregar anotación </a>
+                </div>
+            </section>
+
+        </div>
+        <div class="col-md-9">
+            <!-- Panel -->
+            <div class="panel ">
+                <div class="panel-body nav-tabs-animate">
+                    <uib-tabset active="">
+                        <uib-tab index="0" heading="Seguimientos">
+
+                            <button type="button" ui-sref="main.personal.riesgo"
+                                    class="btn btn-icon btn-danger    btn-add-riesgo pull-right">
+                                <i class="icon wb-warning" aria-hidden="true"></i>
+                                Riesgos
+                            </button>
+                            <div class="tab-content animation-fade col-md-12">
+                                <br>
+
+                                <div class="alert alert-info alert-dismissible" role="alert"
+                                     ng-if="archivoPersonal.length == 0">
+                                    <i class="icon  wb-info-circle" aria-hidden="true"></i>
+                                    No hay riesgos agregados para este estudiante
+                                </div>
+                                <div class="media is-loading"
+                                     ng-repeat="archivo in archivoPersonal | orderBy: '-fecha_reporte'">
+                                    <div class="media-left">
+
+                                        <img ng-if="archivo.usuarios_codigo"
+                                             ng-src="http://savio.utb.edu.co/user/external_render_pic.php?user=uws1&pass=uws1&wsusername={{archivo.usuarios_codigo}}"
+                                             alt="" class="avatar"><i></i></a>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h4 class="media-heading">
+                                                    Riesgo: {{archivo.riesgo.nombre}}
+                                                    <small ng-if="archivo.usuarios_codigo">Agregado por:
+                                                        {{archivo.usuarios_codigo}}
+                                                    </small>
+                                                </h4>
+                                                <p class="name" ng-if="archivo.fecha_reporte">Fecha de reporte:
+                                                    {{archivo.fecha_reporte}}</p>
+                                                <p class="name">Tipo de riesgo: {{archivo.riesgo.tiporiesgo.nombre}}</p>
+
+                                                <div class="alert alert-alt alert-danger alert-dismissible "
+                                                     role="alert">
+                                                    <div class="row">
+                                                        <div class="col-md-11">
+                                                            <span>Descripcion: </span>{{archivo.riesgo.descripcion}}
+
+                                                        </div>
+                                                        <div class=" col-md-1">
+                                                            <button type="button"
+                                                                    ng-show="!archivo.usuarios_codigo"
+                                                                    ng-click="agregarRiesgo(archivo.riesgo.id,usuario.codigo,estudiante.ID,estudiante.PROGRAMA)"
+                                                                    class="btn btn-icon btn-danger btn-round  pull-right btn-outline">
+                                                                <i class="icon wb-check" aria-hidden="true"></i>
+
+                                                            </button>
+                                                        </div>
+                                                        <div class=" col-md-1">
+                                                            <button type="button"
+                                                                    ng-show="archivo.usuarios_codigo"
+                                                                    ng-click="eliminarArchivo(archivo.riesgo.id)"
+                                                                    class="btn btn-icon btn-danger btn-round  pull-right btn-outline">
+                                                                <i class="icon wb-close" aria-hidden="true"></i>
+
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div>
+                                        <div class="pull-left btn-show-estrategias">
+
+                                            <button type="button"
+                                                    ng-click="archivo.isShowEstrategias = !archivo.isShowEstrategias"
+                                                    class="btn btn-outline btn-icon btn-primary btn-round">
+                                                <i class="icon wb-chevron-down" aria-hidden="true"
+                                                   ng-class="{'wb-chevron-down': archivo.isShowEstrategias == false || !archivo.isShowEstrategias , 'wb-chevron-up': archivo.isShowEstrategias == true }">
+
+                                                </i>
+
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+
+                                    <div uib-collapse="archivo.isShowEstrategias">
+                                        <div class="tab-pane animation-fade active margin-top-35" id="all_contacts"
+                                             role="tabpanel">
+                                            <h4 class="example-title">Estrategias aplicadas</h4>
+                                            <button type="button"
+                                                    ng-disabled="archivo.id==0"
+                                                    ui-sref="main.personal.estrategia({archivoId:archivo.id,riesgoId:archivo.riesgo.id})"
+                                                    class="btn btn-primary  btn-icon btn-add-estrategia pull-right ">
+                                                <i class="icon wb-extension" aria-hidden="true"></i>
+                                                Estrategias
+                                            </button>
+                                            <br>
+
+                                            <ul class="list-group">
+                                                <div class="alert alert-info alert-dismissible" role="alert"
+                                                     ng-if="archivo.intervenciones.length < 1">
+                                                    <i class="icon  wb-info-circle" aria-hidden="true"></i>
+                                                    No hay estrategias aplicadas
+                                                </div>
+                                                <li ng-if="archivo.intervenciones.length"
+                                                    ng-repeat="estrategia in archivo.intervenciones"
+                                                    class="list-group-item">
+
+                                                    <div class="media">
+                                                        <div class="media-left">
+                                                            <div class="avatar avatar-online">
+                                                                <img ng-if="archivo.usuarios_codigo"
+                                                                     ng-src="http://savio.utb.edu.co/user/external_render_pic.php?user=uws1&pass=uws1&wsusername={{archivo.usuarios_codigo}}"
+                                                                     alt="" class="avatar">
+                                                            </div>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h4 class="media-heading">
+                                                                {{estrategia.estrategias.nombre}}
+                                                                <small>{{estrategia.usuarios_codigo}}</small>
+                                                            </h4>
+                                                            <br>
+                                                            <div class="row">
+                                                                <div class="col-md-7">
+                                                                    <p class="name">Fecha de asignacion:
+                                                                        {{estrategia.fecha_inicio}}</p>
+                                                                    <p class="name">Fecha de
+                                                                        finalizacion:{{estrategia.fecha_fin}}</p>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="alert alert-alt alert-info alert-dismissible"
+                                                                 role="alert">
+                                                                <p>
+                                                                    <span>Descripcion: </span>{{estrategia.estrategias.descripcion}}
+                                                                </p>
+                                                            </div>
+
+                                                        </div>
+                                                        <!--div class="media-right">
+                                                            <button type="button" class="btn btn-outline btn-success btn-sm">Follow</button>
+                                                        </div-->
+                                                    </div>
+
+                                                    <hr>
+                                                    <div id="recentActivityWidget">
+                                                        <ul class="timeline timeline-icon">
+                                                            <li class="timeline-reverse"
+                                                                ng-repeat="accion in estrategia.estrategias.acciones ">
+                                                                <div class="timeline-content-wrap">
+                                                                    <div class="timeline-dot "
+                                                                         ng-class="{'bg-blue-500': accion.estado==undefined, 'bg-blue-800':accion.estado==0,'bg-green-600':accion.estado==1,'bg-red-600':accion.estado==2}">
+                                                                        <span>{{ estrategia.estrategias.acciones.indexOf(accion)}}</span>
+                                                                    </div>
+                                                                    <div class="timeline-content">
+
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <div class="title">
+                                                                                    <span class="authors">{{accion.nombre}}</span>
+                                                                                </div>
+                                                                                <p>Tiempo estimado:
+                                                                                    {{accion.tiempo_estimado}}</p>
+
+
+                                                                            </div>
+                                                                            <div class="col-md-6 ">
+                                                                                <ul class="mi-acciones-right pull-right">
+                                                                                    <li>
+                                                                                        <button type="button"
+                                                                                                ng-if="accion.estado!='no'"
+                                                                                                class=" btn btn-outline btn-icon btn-default btn-round"
+                                                                                                ui-sref="main.personal.accion({intervencionId:estrategia.id,accionId:accion.id})"
+
+                                                                                                style="padding-right: 0;">
+                                                                                            <i class="icon wb-wrench"
+                                                                                               aria-hidden="true"></i>
+                                                                                        </button>
+
+                                                                                        <button type="button"
+                                                                                                ng-if="accion.estado=='no'"
+                                                                                                ng-disabled="estrategia.estrategias.acciones[estrategia.estrategias.acciones.indexOf(accion)-1].estado==0 || estrategia.estrategias.acciones[estrategia.estrategias.acciones.indexOf(accion)-1].estado=='no'"
+                                                                                                class=" btn btn-outline btn-icon btn-default btn-round"
+                                                                                                ng-click="agregarAccion(estrategia.id,accion.id)"
+                                                                                                style="padding-right: 0;">
+
+                                                                                            <i class="icon wb-play"
+                                                                                               aria-hidden="true"></i>
+                                                                                        </button>
+
+
+                                                                                    </li>
+                                                                                    <li>
+
+                                                                                    </li>
+                                                                                </ul>
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row">
+
+                                                                            <div class="col-md-3">
+                                                                                <p>Finalizada?: No</p>
+                                                                                <p>Costo total: 0</p>
+                                                                            </div>
+                                                                            <div class="col-md-9">
+                                                                                <div class="alert alert-alt alert-info alert-dismissible"
+                                                                                     role="alert">
+                                                                                    <p>
+                                                                                        <span class="">Descripcion:</span>
+                                                                                        {{accion.descripcion}}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+
+
+                                                        </ul>
+                                                    </div>
+
+                                                </li>
+
+                                            </ul>
+
+                                        </div>
+
+                                    </div>
+                                    <hr>
+                                </div>
+
+                            </div>
+
+
+                        </uib-tab>
+
+                        <!--  <uib-tab index="1" heading="Academica">
+                              <div class="tab-content animation-fade">
+                                  Informacion Academica
+                              </div>
+                          </uib-tab>-->
+
+                        </uib-tab>
+                    </uib-tabset>
+
+
+                </div>
+            </div>
+            <!-- End Panel -->
+        </div>
+    </div>
+</div>
+
+
+<script type="text/ng-template" id="windows.html">
+
+    <div modal-render="{{$isRendered}}" tabindex="-1" role="dialog" class="modal modal-success"
+         uib-modal-animation-class="fade" modal-in-class="in" ng-style="{'z-index': 1750 + index*10, display: 'block'}">
+        <div class="modal-dialog {{size ? 'modal-' + size : ''}}  animation-fade">
+            <div class="modal-content" uib-modal-transclude></div>
+        </div>
+    </div>
+
+
+</script>
+
+<script type="text/ng-template" id="windows2.html">
+
+    <div modal-render="{{$isRendered}}" tabindex="-1" role="dialog" class="modal modal-success"
+         uib-modal-animation-class="fade" modal-in-class="in" ng-style="{'z-index': 1750 + index*10, display: 'block'}">
+        <div class="">
+            <div class="" uib-modal-transclude></div>
+        </div>
+    </div>
+
+
+</script>
+
+<script type="text/ng-template" id="modal.html">
+
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" ng-click="cerrarModal()">×</span>
+        </button>
+        <h4 class="modal-title">Agregar estrategia (RAC001)</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+
+                <am-multiselect class="input-lg" multiple="true"
+                                ms-sele ed="There are {{selectedCar.length}} car(s) selected" ng-model="selectedCar"
+                                ms-header="Select Some Cars" options="c.name for c in cars"
+                                change="selected()"></am-multiselect>
+
+                <div class="list-group">
+                    <a class="list-group-item" href="javascript:void(0)" ng-repeat="item in selectedCar">{{item}}</a>
+
+                </div>
+
+
+            </div>
+
+            <div class="col-sm-12 ">
+                <button class="btn btn-primary pull-right" data-dismiss="modal" type="button" ng-click="ok()">Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+</script>
+
+
+<script type="text/ng-template" id="riesgo-crear.html">
+    <div class="modal-header">
+        <button type="button" class="close">
+            <span aria-hidden="true" ng-click="cerrarModal()">×</span>
+        </button>
+        <h3 class="modal-title">Agregar factor de riesgo</h3>
+        <br>
+        <form role="search">
+            <div class="form-group">
+                <div class="input-search">
+                    <i class="input-search-icon wb-search" aria-hidden="true"></i>
+                    <input type="text" class="form-control" name="site-search"
+                           placeholder="Buscar factores de riesgo..." ng-model="buscar_riesgo">
+                    <button type="button" class="input-search-close icon wb-close" data-target="#site-navbar-search"
+                            data-toggle="collapse" aria-label="Close" aria-expanded="true"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-body">
+        <ul class="ul-mi-riesgo">
+            <li ng-repeat="riesgo in riesgos | filter:buscar_riesgo">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-alt  alert-dismissible "
+                                     ng-class="{'alert-success': !riesgo.estado, 'alert-danger':riesgo.estado==1}"
+                                     role="alert">
+                                    <h4 class="media-heading ng-binding">
+                                        {{riesgo.nombre}}
+                                        <small class="ng-binding">
+                                            {{riesgo.tiporiesgo.nombre}}
+                                        </small>
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <span>Descripcion: </span> {{riesgo.descripcion}}
+
+                                        </div>
+                                        <div class=" col-md-2">
+
+                                            <button type="button"
+                                                    ng-click="agregarRiesgo(riesgo.id)"
+                                                    class="btn btn-icon btn-success btn-round  pull-right btn-outline margin-right-10">
+                                                <i class="icon wb-check" aria-hidden="true"></i>
+                                            </button>
+
+                                            <button type="button"
+                                                    ng-click="openModalRiesgoFecha(riesgo)"
+                                                    class="btn btn-icon btn-info btn-round  pull-right btn-outline margin-right-10">
+                                                <i class="icon wb-calendar" aria-hidden="true"></i>
+                                            </button>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+
+
+        </ul>
+
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="estrategia-agregar.html">
+    <div class="modal-header">
+        <button type="button" class="close">
+            <span aria-hidden="true" ng-click="cerrarModal()">×</span>
+        </button>
+        <h3 class="modal-title" id="modal-title">Agregar estrategias</h3>
+        <br>
+        <form role="search">
+            <div class="form-group">
+                <div class="input-search">
+                    <i class="input-search-icon wb-search" aria-hidden="true"></i>
+                    <input type="text" class="form-control" name="site-search"
+                           placeholder="Buscar estrategia..." ng-model="buscar_estreategia">
+                    <button type="button" class="input-search-close icon wb-close" data-target="#site-navbar-search"
+                            data-toggle="collapse" aria-label="Close" aria-expanded="true"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <ul class="ul-mi-riesgo">
+            <li ng-repeat="estrategia in estrategias | filter:buscar_estreategia">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-alt  alert-dismissible "
+                                     ng-class="{'alert-success': !estrategia.estado, 'alert-danger':estrategia.estado==1}"
+                                     role="alert">
+                                    <h4 class="media-heading ng-binding">
+                                        {{estrategia.nombre}}
+                                        <!--small class="ng-binding">
+                                            {{estrategia.riesgo.nombre}}
+                                        </small-->
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <span>Descripcion: </span> {{estrategia.descripcion}}
+
+                                        </div>
+                                        <div class=" col-md-1">
+                                            <button type="button" ng-if="!estrategia.estado"
+                                                    ng-click="agregarEstrategia(estrategia.id)"
+                                                    class="btn btn-icon btn-primary btn-round  pull-right btn-outline">
+                                                <i class="icon wb-check" aria-hidden="true"></i>
+                                            </button>
+
+                                            <button type="button" ng-if="estrategia.estado"
+                                                    ng-click="eliminarIntervencion(estrategia.id)"
+                                                    class="btn btn-icon btn-danger btn-round  pull-right btn-outline">
+                                                <i class="icon wb-close" aria-hidden="true"></i>
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="config-accion.html">
+    <div id="mi-panel" ng-class="{'animation-reverse': isPanel == false}"
+         class="  mis-acciones animation-slide-right" click-outside="closePanel()"
+         outside-if-not="btn-show,mi-panel">
+        <div id="personalCompletedWidget" class="widget widget-shadow padding-bottom-20">
+            <div class="widget-header ">
+                <a href="javascript:void(0)"
+                   ng-click="eliminarAccionAplicada(configuracion.id)"
+                   class="add-item-toggle pull-right margin-right-40  bg-green-700 padding-top-20 padding-5 badge-radius"
+                   ng-click="closePanel()">
+                    <i class="icon wb-trash font-size-26" aria-hidden="true" style="color:#fff;"></i>
+                </a>
+                <div class="overlay-background ">
+                    <div class="row" style="margin-top: 30px;">
+
+                        <div class="col-md-2 pull-rleft">
+                            <div class="switch pull-right">
+
+
+                                <div class="radio-wrapper">
+                                    <p class="correct"><i class="ion-checkmark-round"></i>
+                                    </p>
+                                    <p class="neutral-icon"><i class="ion-record"></i>
+                                    </p>
+                                    <p class="wrong"><i class="ion-close-round"></i></p>
+                                    <input type="radio" ng-model="configuracion.estado" value="1" class="yes"
+                                           ng-change="cambiarEstado(configuracion)"
+                                           id="radio-yes"/>
+
+                                    <label for="radio-yes"></label>
+
+                                    <input type="radio" ng-model="configuracion.estado" value="0" class="neutral"
+                                           ng-change="cambiarEstado(configuracion)"
+                                           checked
+                                           id="radio-neutral"/>
+                                    <label for="radio-neutral"></label>
+
+                                    <input type="radio" ng-model="configuracion.estado" value="2" class="no"
+                                           ng-change="cambiarEstado(configuracion)"
+                                           id="radio-no"/>
+                                    <label for="radio-no"></label>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h3 class="white" ng-if="configuracion.estado==0">En progreso</h3>
+                            <h3 class="white" ng-if="configuracion.estado==1">Terminado</h3>
+                            <h3 class="white" ng-if="configuracion.estado==2">Interrumpido</h3>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="widget-content mi-scroll2">
+
+                <div class="row">
+                    <div class="col-md-2 pull-left">
+                        <a class="btn btn-icon btn-success btn-outline btn-round"
+                           href="mailto:{{estudiante.EMAIL}}?subject={{configuracion.accion.descripcion}}&body={{configuracion.accion.mensaje}}"
+                        >
+                            <i class="icon wb-envelope" aria-hidden="true"></i></a>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="">
+                            <div class="form-group input-group-icon">
+
+                                <input type="number" class="form-control round"
+                                       placeholder="Costo total">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row ">
+
+                    <div class="col-md-12">
+                        <h4 class="media-heading ng-binding">
+                            Observaciones
+                        </h4>
+                        <br>
+                        <div class="mi-scroll">
+                            <div class="comment media" ng-repeat="obsercacion in configuracion.observaciones">
+                                <div class="media-left">
+                                    <a class="avatar avatar-xs mi-avatar-comment"
+                                       href="javascript:void(0)">
+                                        <img ng-src="http://savio.utb.edu.co/user/external_render_pic.php?user=uws1&pass=uws1&wsusername={{obsercacion.usuarios_codigo}}"
+                                             alt="..." style="width:40px">
+                                    </a>
+                                </div>
+                                <div class="comment-body media-body">
+                                    <a class="comment-author"
+                                       href="javascript:void(0)">{{obsercacion.usuarios_codigo}}</a>
+                                    <div class="comment-meta">
+                                        <span class="date">Publicado el  {{obsercacion.fecha | date:'yyyy-MM-dd: H:mm'}}</span>
+                                    </div>
+                                    <div class="comment-content">
+                                        <p>{{obsercacion.contenido}}</p>
+                                    </div>
+                                    <div class="comment-actions">
+                                        <a class="btn btn-sm btn-icon btn-flat btn-default">
+                                            <i class="icon wb-edit" aria-hidden="true"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-icon btn-flat btn-default"
+                                           ng-click="eliminarObservacion(obsercacion.id)"
+                                           href="javascript:void(0)" role="button">
+                                            <i class="icon wb-trash" aria-hidden="true"></i>
+                                        </a>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div>
+                            <form class="comment-reply">
+                                <div class="form-group">
+                                    <textarea class="form-control mi-text-comment" rows="5"
+                                              placeholder="Agregar observaciones"
+                                              ng-model="observacion.contenido"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"
+                                            ng-click="agregarObservacion(observacion.contenido,configuracion.id)">
+                                        Agregar
+                                    </button>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</script>
+
+
+<script type="text/ng-template" id="modal-riesgo-fecha.html">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" ng-click="cerrarModal()">×</span>
+        </button>
+        <h4 class="modal-title">Selecciona una fecha para el rieso <span
+                class="badge badge-danger">{{nombre_riesgo}}</span></h4>
+    </div>
+    <div class="modal-body">
+        <form ng-submit="guardar()">
+            <div class="row">
+
+                <div class="col-lg-12 form-group">
+                    <div>
+                        <div uib-datepicker ng-model="fecha_reporte" class="well well-lg datepicker datepicker-inline"
+                             datepicker-options="options"></div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 pull-right">
+                    <button class="btn btn-info btn-outline" data-dismiss="modal" type="submit">Guardar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</script>

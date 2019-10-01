@@ -1,1 +1,5 @@
-# altem-api
+# ALTEM API
+
+# Deploy Server
+
+    docker-compose up --build

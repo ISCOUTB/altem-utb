@@ -1,0 +1,31 @@
+<div class="page-login layout-full page-dark">
+    <div class="vertical-align text-center">
+        <div class="page-content vertical-align-middle">
+            <div class="brand">
+                <img class="brand-img" src="/img/logo.png" alt="..." style="width: 44px;">
+                <h2 class="brand-text">ALTEM</h2>
+        </div>
+            <form method="post" ng-submit="login(usuario)">
+                <div class="form-group">
+                    <label class="sr-only" for="inputName">Usuario UTB</label>
+                    <input type="text" class="form-control" id="inputName" ng-model="usuario.codigo"
+                           placeholder="Usuario UTB">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="inputPassword">Password</label>
+                    <input type="password" class="form-control" id="inputPassword" ng-model="usuario.password"
+                           placeholder="Contraseña">
+                </div>
+                <div class="form-group clearfix">
+                    <div class="checkbox-custom checkbox-inline checkbox-primary pull-left">
+                        <input type="checkbox" id="inputCheckbox" name="remember">
+
+                </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" >ENTRAR</button>
+            </form>
+
+
+    </div>
+</div>
+</div>

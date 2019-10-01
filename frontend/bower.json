@@ -1,0 +1,41 @@
+{
+  "name": "altem",
+  "homepage": "https://github.com/hariza17/altem",
+  "description": "Sistema de Alertas Tempranas",
+  "main": "index.blade.php",
+  "authors": [
+    "Hernando ariza perez"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "3.10.1",
+    "angular-toastr": "~1.7.*",
+    "angular-animate": "~1.7.*",
+    "angular-ui-router": "0.3.1",
+    "angular": "1.7.*",
+    "angular-bootstrap": "^1.3.2",
+    "angular-click-outside": "^2.8.3",
+    "angular-confirm-modal": "^1.2.5",
+    "ngstorage": "^0.3.10",
+    "angular-jwt": "^0.1.11",
+    "angular-permission": "^3.2.1",
+    "angular-sanitize": "1.7.*",
+    "ng-csv": "0.3.6",
+    "angular-loading-bar": "^0.9.0",
+    "chart.js": "npm:chart.js#^2.2.2",
+    "angular-chart.js": "^1.0.2"
+
+  },
+  "devDependencies": {},
+  "resolutions": {
+    "angular": "~1.7.*"
+  }
+}

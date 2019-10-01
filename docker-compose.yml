@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+
+  php:
+    build: ./api
+    restart: always
+    volumes:
+      - ./api:/altem/backend
+      - ./data/local.ini:/etc/php/7.2/conf.d/local.ini
+      - ./data/altem.conf:/etc/php/7.2/fpm/pool.d/altem.conf
+  
+  backend:
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "8000:8000"
+    volumes:
+      - ./api:/altem/backend
+      - ./frontend:/altem/frontend
+      - ./data/altem/:/etc/nginx/conf.d/
+
+  database:
+    image: "mysql:5.7"
+    restart: always
+    environment:
+      MYSQL_DATABASE: altem
+      MYSQL_ROOT_PASSWORD: rootroot
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./data/my.cnf:/etc/mysql/my.cnf
