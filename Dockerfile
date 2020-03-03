@@ -26,7 +26,7 @@ RUN service apache2 start
 COPY --chown=www-data:www-data ./altem /altem
 WORKDIR /altem/
 RUN ls -lht /altem
-RUN composer install
+#RUN composer install
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm install -g -y bower bower-npm-resolver
 WORKDIR /altem/public
