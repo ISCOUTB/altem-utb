@@ -1,0 +1,481 @@
+var controllerModule = angular.module('AppControllers');
+
+controllerModule
+    .controller('estudianteController', ['$scope', 'estudianteService', '$stateParams', 'toastr', '$state', '$rootScope', 'filtroService', '$uibModal',
+        function ($scope, estudianteService, $stateParams, toastr, $state, $rootScope, filtroService, $uibModal) {
+            $rootScope.estudiantes = [];
+            $scope.maxSize = 7;
+            $scope.limit = 10;
+            $scope.n_datos_p_pagina = $scope.limit;
+            $scope.currentPage = 1;
+            $scope.mostrarBecas = false;
+            $scope.getAllEstudiantes = function (currentPage) {
+                var data = {
+                    de: (currentPage - 1) * $scope.limit,
+                    a: $scope.limit
+                };
+                $rootScope.showLoader(true);
+                estudianteService.getAllEstudiantes(data).then(function (response) {
+                    $rootScope.showLoader(false);
+                    $rootScope.estudiantes = response.data;
+                    if ($rootScope.estudiantes.length > 0) {
+                        $scope.totalItems = $rootScope.estudiantes[0].total[0].total;
+                    } else {
+                        $scope.totalItems = 0;
+                    }
+                });
+            };
+            $scope.getColumsEstudiantes = function (obj) {
+                var keys = [];
+                for (var key in obj) {
+                    keys.push(key);
+                }
+                return keys;
+            };
+
+            $scope.getFiltrosByEstudiantes = function (id) {
+                // 
+                if ( id === 'becados' )
+                    $scope.mostrarBecas = true;
+                else 
+                    $scope.mostrarBecas = false;
+
+                $rootScope.showLoader(true);
+                estudianteService.getEstudiantesByFiltro(id).then(function (response) {
+                    $rootScope.showLoader(false);
+                    $rootScope.estudiantes = response.data;
+                });
+            };
+            $scope.getAllEstudiantes(1);
+            $rootScope.barra = function () {
+                $rootScope.titulo = "NO";
+            };
+            $rootScope.barra();
+
+            $scope.pageChanged = function (currentPage) {
+                $scope.getAllEstudiantes(currentPage);
+            };
+            $scope.buscarEstudiante = function (string) {
+                if (string == "") {
+                    $scope.getAllEstudiantes(1);
+                    $scope.desabilitar_pag = false;
+                } else {
+                    var data = {
+                        de: ($scope.currentPage - 1) * $scope.limit,
+                        a: $scope.limit,
+                        string: string
+                    }
+                    $rootScope.showLoader(true);
+                    estudianteService.getEstudiantesSearch(data).then(function (response) {
+                        $rootScope.showLoader(false);
+                        $rootScope.estudiantes = response.data;
+
+                        if ($rootScope.estudiantes.length > 0) {
+                            $scope.totalItems = $rootScope.estudiantes[0].total[0].total;
+                        } else {
+                            $scope.totalItems = 0;
+                        }
+                        $scope.desabilitar_pag = true;
+                        console.log($scope.totalItems);
+                    }, function (error) {
+                        console.log(error);
+                    });
+                }
+            };
+            $rootScope.showLoader(true);
+            filtroService.getAllFiltros().then(function (response) {
+                $rootScope.showLoader(false);
+                $scope.filtros = response.data;
+                $scope.filtros.push( { 
+                    riesgos_id : 'becados',
+                    nombre : 'Becados'
+                 } )
+                console.log( $scope.filtros );
+            });
+
+            $rootScope.getActiveClass = function (state) {
+                return ($state.current.name === state) ? 'active' : '';
+            };
+        }])
+
+    .filter('reverse', function () {
+        return function (items) {
+            return items;
+        };
+    })
+
+    .controller('cargarFiltroController', ['$scope', '$uibModalInstance', 'filtroService', function ($scope, $uibModalInstance, filtroService) {
+
+    }])
+    .controller('estudianteIntervencionController',
+        ['$scope', 'estudianteService', '$stateParams', '$location', 'toastr', '$rootScope',
+            function ($scope, estudianteService, $stateParams, $location, toastr, $rootScope) {
+
+
+            }])
+    .controller('estudiantePersonalController',
+        ['$scope', 'estudianteService', '$stateParams', '$location', 'toastr', '$state', '$rootScope', '$uibModal', 'archivoPersonalService', 'accionService', '$confirm',
+            function ($scope, estudianteService, $stateParams, $location, toastr, $state, $rootScope, $uibModal, archivoPersonalService, accionService, $confirm) {
+
+                $scope.anotaciones = [];
+
+                $scope.getEstudiante = function (estudianteId) {
+                    $rootScope.estudiante = {};
+                    estudianteService.getEstudianteById(estudianteId).then(function (response) {
+                        $rootScope.estudiante = response.data;
+                    });
+
+                };
+
+                $scope.getEstudiante($stateParams.estudianteId);
+                $rootScope.getRiesgosByEstudiantes = function () {
+                    $rootScope.showLoader(true);
+                    estudianteService.getRiesgosByEstudiante($stateParams.estudianteId).then(function (response) {
+                        $rootScope.showLoader(false);
+                        const archivo = [...response.data];
+                        archivo.forEach(function (item, index) {
+                            if (item.intervenciones) {
+                                item.intervenciones.forEach(function (intervencion, index1) {
+                                    intervencion.acciones_aplicadas.forEach(function (accionAplicada, index2) {
+                                        if (intervencion.estrategias_id === intervencion.estrategias.id && intervencion.id === accionAplicada.intervenciones_id) {
+                                            intervencion.estrategias.acciones.forEach(function (accion, index3) {
+                                                if (accion.id === accionAplicada.acciones_id) {
+                                                    accion.estado = accionAplicada.estado;
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                        $scope.archivoPersonal = archivo;
+                        $rootScope.codigoEstudiante = parseInt($stateParams.estudianteId);
+                    });
+                };
+                $rootScope.getRiesgosByEstudiantes();
+
+                $scope.getEdad = function (fecha_na) {
+                    var ANIO_ACTUAL = new Date().getFullYear();
+                    var FECHA_NA = new Date(fecha_na).getFullYear();
+
+                    return ANIO_ACTUAL - FECHA_NA;
+                };
+
+                $scope.showPanel = function () {
+                    $scope.isPanel = true;
+
+
+                };
+
+                $scope.closePanel = function () {
+                    $scope.isPanel = false;
+
+                };
+
+
+                $scope.agregarRiesgo = function (id_riesgo, codigo_usuario, id_estudiante, programa_estudiante) {
+
+                    $scope.archivo = {
+                        fecha_reporte: new Date(),
+                        riesgos_id: id_riesgo,
+                        estudiantes_altem_codigo: id_estudiante.toLowerCase(),
+                        programa_estudiante: programa_estudiante,
+                        usuarios_codigo: codigo_usuario,
+                        estado: 0
+                    };
+                    archivoPersonalService.createArchivo($scope.archivo).then(function (response) {
+                        $rootScope.getRiesgosByEstudiantes();
+                        toastr.success('Exito', 'Riesgo agregado');
+                    }, function (error) {
+                        console.log(error);
+                    });
+
+
+                };
+                //$rootScope.now = new Date();
+
+
+                $scope.agregarAccion = function (intevencionId, accionId) {
+                    var accion = {
+                        fecha_aplicacion: new Date(),
+                        intervenciones_id: intevencionId,
+                        acciones_id: accionId,
+                        estado: 0
+                    };
+                    accionService.aplicarAccion(accion).then(function (response) {
+                        toastr.success('Exito', 'Accion iniciada');
+                        $rootScope.getRiesgosByEstudiantes();
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+
+
+                $scope.eliminarArchivo = function (idRiesgo) {
+                    var data = {
+                        idriesgo: idRiesgo,
+                        codigo_estudiante: $stateParams.estudianteId
+                    };
+                    $confirm({text: '¿Seguro que desea eliminar?'}).then(function () {
+                        archivoPersonalService.deleteArchivo(data).then(function (response) {
+                            $rootScope.getRiesgosByEstudiantes();
+                            toastr.warning('Exito', 'Riesgo Eliminado');
+                        }, function (error) {
+                            console.log(error.data.status);
+                            if (error.data.status) {
+
+                            }
+                        });
+
+                    });
+                };
+
+                $scope.getAnotacionById = function (codigo) {
+                    estudianteService.getAnotacionById(codigo).then(function (response) {
+                        $scope.anotaciones = response.data;
+                    }, function (response) {
+                        console.log(response);
+                    })
+                };
+
+                $scope.getAnotacionById($stateParams.estudianteId);
+
+            }])
+    .controller('archivoPersonalCrearController',
+        ['$scope', 'archivoPersonalService', '$stateParams', '$location', 'toastr', '$rootScope', 'riesgoService', '$uibModalInstance', '$confirm', 'accionService', '$uibModal',
+            function ($scope, archivoPersonalService, $stateParams, $location, toastr, $rootScope, riesgoService, $uibModalInstance, $confirm, accionService, $uibModal) {
+                $rootScope.getAllRiesgos = function () {
+                    var data = {
+                        codigo_estudiante: $stateParams.estudianteId
+                    };
+                    $rootScope.showLoader(true);
+                    riesgoService.riesgoByArchivo(data).then(function (response) {
+                        //console.log(response.data);
+                        $rootScope.showLoader(false);
+                        $scope.riesgos = response.data;
+                    });
+
+                };
+                $rootScope.getAllRiesgos();
+                $rootScope.agregarRiesgo = function (id_riesgo, fecha) {
+
+                    if (!fecha) {
+                        freporte = new Date()
+                    } else {
+                        freporte = fecha
+                    }
+                    $scope.archivo = {
+                        fecha_reporte: freporte,
+                        riesgos_id: id_riesgo,
+                        estudiantes_altem_codigo: $rootScope.estudiante.ID.toLowerCase(),
+                        programa_estudiante: $rootScope.estudiante.PROGRAMA,
+                        usuarios_codigo: $rootScope.usuario.codigo,
+                        estado: 0
+                    };
+
+                    archivoPersonalService.createArchivo($scope.archivo).then(function (response) {
+                        $rootScope.getRiesgosByEstudiantes();
+                        $rootScope.getAllRiesgos();
+                        toastr.success('Exito', 'Riesgo agregado');
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+
+                $scope.cerrarModal = function () {
+                    $uibModalInstance.dismiss();
+                };
+
+
+                $scope.openModalRiesgoFecha = function (riesgo) {
+                    $uibModalInstance.dismiss();
+                    var modal_riesgo_fecha = $uibModal.open({
+                        templateUrl: 'modal-riesgo-fecha.html',
+                        controller: 'ModalCrearRiesgoFechaCtrl',
+                        resolve: {
+                            riesgo: function () {
+                                return riesgo;
+                            }
+                        }
+                    });
+                    modal_riesgo_fecha.result.then(function (selectedItem) {
+
+                    }, function () {
+
+                    });
+                };
+
+
+            }])
+
+    .controller('ModalCrearRiesgoFechaCtrl', ['$uibModalInstance', 'riesgo', '$scope', '$rootScope', function ($uibModalInstance, riesgo, $scope, $rootScope) {
+        $scope.nombre_riesgo = riesgo.nombre;
+
+        $scope.cerrarModal = function () {
+            $uibModalInstance.dismiss();
+        };
+        $scope.guardar = function () {
+            console.log($scope.fecha_reporte);
+            $rootScope.agregarRiesgo(riesgo.id, $scope.fecha_reporte);
+            $uibModalInstance.dismiss();
+
+        }
+
+    }])
+
+
+    .controller('intervencionCrearController',
+        ['$scope', 'archivoPersonalService', '$stateParams', '$location', 'toastr', '$rootScope', 'estrategiaService', 'intervencionesService', '$confirm', '$uibModalInstance',
+            function ($scope, archivoPersonalService, $stateParams, $location, toastr, $rootScope, estrategiaService, intervencionesService, $confirm, $uibModalInstance) {
+
+                $scope.estrategias = [];
+                $rootScope.cargarEstrategias = function (data) {
+                    $rootScope.showLoader(true);
+                    estrategiaService.getEstrategiaByRiesgoId(data).then(function (response) {
+                        $rootScope.showLoader(true);
+                        $scope.estrategias = response.data;
+
+                    }, function (error) {
+                        console.log(error);
+                    })
+                };
+                var idRiesgo = parseInt($stateParams.riesgoId);
+                var idPersonal = parseInt($stateParams.archivoId);
+                var data1 = {
+                    id: idRiesgo,
+                    idpersonal: idPersonal
+                };
+
+                $rootScope.cargarEstrategias(data1);
+
+                $scope.agregarEstrategia = function (idEstrategia) {
+
+                    $scope.intervencion = {
+                        fecha_inicio: new Date(),
+                        estado: 0,
+                        estrategias_id: idEstrategia,
+                        archivo_personal_id: parseInt($stateParams.archivoId),
+                        usuarios_codigo: $rootScope.usuario.codigo
+                    };
+                    console.log($scope.intervencion);
+
+                    intervencionesService.createIntervencion($scope.intervencion).then(function (response) {
+                        $rootScope.getRiesgosByEstudiantes();
+                        $rootScope.cargarEstrategias(data1);
+                        toastr.success('Exito', 'Estrategia agregada');
+                    }, function (error) {
+                        console.log(error);
+                    })
+                };
+
+
+                $scope.eliminarIntervencion = function (idEstrategia) {
+                    var data = {
+                        idestrategia: idEstrategia,
+                        idarchivo: parseInt($stateParams.archivoId)
+                    };
+                    $uibModalInstance.dismiss();
+                    $confirm({text: '¿Seguro que desea eliminar?'}).then(function () {
+                        intervencionesService.deleteIntervencion(data).then(function (response) {
+                            $rootScope.getRiesgosByEstudiantes();
+                            $rootScope.cargarEstrategias(data1);
+                            window.history.back();
+                            toastr.warning('Exito', 'Estrategia Eliminada');
+
+                        }, function (error) {
+                            console.log(error);
+                        });
+
+                    });
+                };
+
+                $scope.cerrarModal = function () {
+
+                    $uibModalInstance.dismiss();
+
+                }
+            }])
+    .controller('accionConfigController',
+        ['$scope', 'accionService', '$stateParams', '$location', 'toastr', '$rootScope', '$confirm', '$uibModalInstance', 'observacionService',
+            function ($scope, accionService, $stateParams, $location, toastr, $rootScope, $confirm, $uibModalInstance, observacionService) {
+                $scope.getAccionById = function () {
+                    var data = {
+                        intervencionId: $stateParams.intervencionId,
+                        accionId: $stateParams.accionId
+                    };
+                    $rootScope.showLoader(true);
+                    accionService.getAccionAplicada(data).then(function (response) {
+                        $rootScope.showLoader(false);
+                        $scope.configuracion = response.data;
+
+                        console.log($scope.configuracion);
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+                $scope.getAccionById();
+
+                $scope.eliminarAccionAplicada = function (accionAplicadaId) {
+                    $uibModalInstance.dismiss();
+                    $confirm({text: '¿Seguro que desea eliminar la accion?'}).then(function () {
+                        accionService.deleteAccionAplicada(accionAplicadaId).then(function (response) {
+                            $rootScope.getRiesgosByEstudiantes();
+                            //window.history.back();
+                            //toastr.warning('Exito', 'Estrategia Eliminada');
+                            toastr.warning('Exito', 'Accion Eliminada');
+                        }, function (error) {
+                            console.log(error);
+                        });
+                    }, function (no) {
+                        window.history.back();
+                    });
+                };
+
+                $scope.cambiarEstado = function (accionAplicada) {
+
+                    //	console.log(accionAplicada);
+                    accionAplicada.estado = parseInt(accionAplicada.estado);
+                    accionService.updateAccionAplicada(accionAplicada.id, accionAplicada).then(function (response) {
+                        $rootScope.getRiesgosByEstudiantes();
+                        toastr.success('Exito', 'Accion Actualizada');
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+                $scope.agregarObservacion = function (contenido, accionAplicadaId) {
+                    var observacion = {};
+                    observacion.acciones_aplicadas_id = accionAplicadaId;
+                    observacion.fecha = new Date();
+                    observacion.usuarios_codigo = $rootScope.usuario.codigo;
+                    observacion.contenido = contenido;
+                    observacionService.createObservacion(observacion).then(function (response) {
+                        $scope.configuracion.observaciones.push(observacion);
+                        toastr.success('Exito', 'Observacion Agregada');
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+
+
+                $scope.eliminarObservacion = function (id) {
+                    $uibModalInstance.dismiss();
+                    $confirm({text: '¿Seguro que desea eliminar?'}).then(function () {
+                        observacionService.deleteObservacion(id).then(function (response) {
+                            $rootScope.getRiesgosByEstudiantes();
+                            //$rootScope.getAllRiesgos();
+                            window.history.back();
+                            toastr.warning('Exito', 'Observacion  Eliminada');
+                        }, function (error) {
+                            console.log(error.data.status);
+
+                        });
+
+                    });
+                };
+
+
+            }]);
+
+
+
+

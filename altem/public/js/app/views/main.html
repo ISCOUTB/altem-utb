@@ -1,0 +1,295 @@
+<nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle hamburger hamburger-close navbar-toggle-left hided"
+            data-toggle="menubar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="hamburger-bar"></span>
+        </button>
+        <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-collapse"
+            data-toggle="collapse">
+            <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+        </button>
+        <div class="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
+            <img src="/img/logo.png" class="navbar-brand-logo" />
+            <span class="navbar-brand-text">Altem</span>
+        </div>
+    </div>
+    <div class="navbar-container container-fluid">
+        <!-- Navbar Collapse -->
+        <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+            <!-- Navbar Toolbar -->
+            <ul class="nav navbar-toolbar">
+            </ul>
+            <!-- End Navbar Toolbar -->
+            <!-- Navbar Toolbar Right -->
+            <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                <li class="dropdown">
+                </li>
+                <li class="dropdown" uib-dropdown keyboard-nav>
+                    <a class="navbar-avatar dropdown-toggle" uib-dropdown-toggle aria-expanded="false"
+                        data-animation="scale-up" role="button">
+                        <span class="avatar avatar-online">
+                            <img src="https://savio.utb.edu.co/user/external_render_pic.php?user=uws1&pass=uws1&wsusername={{usuario.codigo}}"
+                                alt="...">
+                            <i></i>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" uib-dropdown-menu>
+                        <li role="presentation">
+                            <a href="javascript:void(0)" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i>
+                                Perfil</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="javascript:void(0)" role="menuitem"><i class="icon wb-settings"
+                                    aria-hidden="true"></i> Configuración</a>
+                        </li>
+                        <li class="divider" role="presentation"></li>
+                        <li role="presentation">
+                            <a href="javascript:void(0)" ng-click="cerrarSesion()" role="menuitem"><i
+                                    class="icon wb-power" aria-hidden="true"></i> Salir</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--<li class="dropdown">
+                    <a data-toggle="dropdown" href="javascript:void(0)" title="Ayuda?"
+                       data-animation="scale-up" role="button">
+                        <i class="icon wb-help-circle" aria-hidden="true"></i>
+                    </a>
+
+                </li>-->
+            </ul>
+            <!-- End Navbar Toolbar Right -->
+        </div>
+        <!-- End Navbar Collapse -->
+        <!-- Site Navbar Seach -->
+
+        <!-- End Site Navbar Seach -->
+    </div>
+</nav>
+<div class="site-menubar">
+    <div class="site-menubar-body">
+        <div>
+            <div>
+                <header class="sidebar-header">
+
+                    <!-- -------------- Sidebar - Author -------------- -->
+                    <div class="sidebar-widget author-widget">
+                        <div class="media">
+                            <a class="media-left">
+                                <img
+                                    ng-src="https://savio.utb.edu.co/user/external_render_pic.php?user=uws1&pass=uws1&wsusername={{usuario.codigo}}">
+                            </a>
+
+                            <div class="media-body">
+                                <div class="media-links">
+                                    <a class="sidebar-menu-toggle">{{usuario.codigo}}</a>
+                                </div>
+                                <div class="media-author">{{usuario.nombre| lowercase}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -------------- Sidebar - Author Menu  -------------- -->
+                </header>
+                <ul class="site-menu">
+                    <li class="site-menu-category">General</li>
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.estudiante')">
+                        <a ui-sref="main.estudiante" ng-click="barra()">
+                            <i class="site-menu-icon wb-users" aria-hidden="true"></i>
+                            <span class="site-menu-title">Estudiantes</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+                    </li>
+
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.tiporiesgo')">
+                        <a ui-sref="main.tiporiesgo" ng-click="barra()">
+                            <i class="site-menu-icon wb-text-type" aria-hidden="true"></i>
+                            <span class="site-menu-title">Tipos
+                                de riesgo</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+                    </li>
+
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.estrategia')">
+                        <a ui-sref="main.estrategia" ng-click="barra()">
+                            <i class="site-menu-icon wb-extension" aria-hidden="true"></i>
+                            <span class="site-menu-title">Estrategias</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+                    </li>
+
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.riesgo')">
+                        <a ui-sref="main.riesgo" ng-click="barra()">
+                            <i class="site-menu-icon wb-warning" aria-hidden="true"></i>
+                            <span class="site-menu-title">Factores de riesgo</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+                    </li>
+
+
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.reporte')">
+                        <a ui-sref="main.reporte" ng-click="barra()">
+                            <i class="site-menu-icon wb-file" aria-hidden="true"></i>
+                            <span class="site-menu-title">Reportes</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+
+                    </li>
+
+                    <li class="site-menu-item has-sub"
+                        ng-class="[getActiveClass('main.usuario'),getActiveClass('main')]">
+                        <a ng-click="barra(); isControlAccesso = !isControlAccesso;">
+                            <i class="site-menu-icon wb-user-circle" aria-hidden="true"></i>
+                            <span class="site-menu-title">Control de Acceso</span>
+                            <span class="margin-left-15 icon font-size-10"
+                                ng-class="{'wb-chevron-down': isControlAccesso, 'wb-chevron-right':!isControlAccesso}"></span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                            <ul class="animation-slide-top site-menu-sub"
+                                ng-class="{'block': isControlAccesso, 'hidden':!isControlAccesso}">
+                                <li class="site-menu-item is-shown" ng-class="getActiveClass('main.usuario')">
+                                    <a ui-sref="main.usuario">
+                                        <span class="site-menu-title">Usuarios</span>
+                                    </a>
+                                </li>
+                                <!-- <li class="site-menu-item is-shown" ng-class="getActiveClass('main')">
+                                    <a ui-sref="main">
+                                        <span class="site-menu-title">Roles y Permisos</span>
+                                    </a>
+                                </li> -->
+
+                            </ul>
+                        </a>
+                    </li>
+
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.reporte')">
+                        <a target="_blank" href="http://iceberg.utb.edu.co:8080/icebergrs_pru/logout.action"
+                            ng-click="barra()">
+                            <i class="site-menu-icon wb-file" aria-hidden="true"></i>
+                            <span class="site-menu-title">Reportes Banner</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+
+                    </li>
+
+                    <li class="site-menu-item has-sub" ng-class="getActiveClass('main.reporte')">
+                        <a target="_blank"
+                            href="https://ethosprod.utb.edu.co/authenticationendpoint/login.do?commonAuthCallerPath=%252Fcas%252Flogin&forceAuth=false&passiveAuth=false&tenantDomain=carbon.super&sessionDataKey=8161eb44-7661-4208-88c5-cb9922ca249a&relyingParty=PROD_AppNav&type=cassso&sp=PROD_AppNav&isSaaSApp=false&authenticators=BasicAuthenticator:LOCAL"
+                            ng-click="barra()">
+                            <i class="site-menu-icon wb-file" aria-hidden="true"></i>
+                            <span class="site-menu-title">Banner Ellucian</span>
+                            <div class="site-menu-badge">
+                                <!--span class="badge badge-success">2</span-->
+                            </div>
+                        </a>
+
+
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="site-menubar-footer">
+        <a ui-sref="main.usuario" ng-click="barra()" class="fold-show" data-placement="top" data-toggle="tooltip"
+            data-original-title="Settings">
+            <span class="icon wb-settings" aria-hidden="true"></span>
+        </a>
+        <a href="javascript: void(0);" data-placement="top" data-toggle="tooltip" data-original-title="Lock">
+            <span class="icon wb-eye-close" aria-hidden="true"></span>
+        </a>
+        <a href="javascript: void(0);" data-placement="top" data-toggle="tooltip" data-original-title="Logout">
+            <span class="icon wb-power" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+
+<!-- Page -->
+<div class="page animation-fade" ui-view>
+    <div class="page-content padding-30 container-fluid">
+        <div class="row" data-plugin="matchHeight" data-by-row="true">
+            <div class="col-xlg-7 col-md-12">
+                <!-- Widget Linearea Color -->
+                <div class="widget widget-shadow widget-responsive" id="widgetLineareaColor">
+                    <div class="widget-content">
+                        <div class="padding-top-30 padding-30" style="height:calc(100% - 250px);">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <p class="font-size-20 blue-grey-700">Sistema de Alertas Tempranas</p>
+                                    <p>Es un producto de software cuya función principal es servir de apoyo a la gestión
+                                        de Bienestar Universitario en lo referente al seguimiento de estudiantes en
+                                        situaciones de interés, desde el momento de su ingreso a clases. Las situaciones
+                                        de interés mencionadas corresponden a aquellas relacionadas con factores de
+                                        riesgo académico, personal, económico o institucional.
+                                    </p>
+                                    <div class="counter counter-md text-left">
+                                        <div class="counter-number-group">
+                                            <span class="counter-icon red-600"><i class="icon wb-triangle-up"
+                                                    aria-hidden="true"></i></span>
+                                            <span class="counter-number red-600">Bienestar universitario</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Widget Linearea Color -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-if="isLoading" class="block-ui">
+    <span class="side-panel-loading loader loader-grill" role="status">
+</div>
+
+<!-- End Page -->
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="site-footer-right">© 2016</div>
+    <div class="text-center">
+        Universidad Tecnologica de Bolivar <i class="green-600 wb wb-heart"></i>
+    </div>
+</footer>
+
+<script type="text/ng-template" id="alertas.html">
+    <div class="modal-dialog modal-top">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title">{{data.title}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="" role="alert">
+
+                    <p class="font-size-20"> {{data.text}}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="cancel()">{{data.cancel}}</button>
+                <button type="button" class="btn btn-primary" ng-click="ok()">{{data.ok}}</button>
+            </div>
+        </div>
+    </div>
+
+</script>

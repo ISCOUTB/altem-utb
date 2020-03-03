@@ -1,0 +1,11 @@
+{
+    "jscodehints.detectedExclusions": [
+        "D:/HERNANDO/Proyectos/SAT/sat/public/js/app/services/estudianteService.js",
+        "D:/HERNANDO/Proyectos/SAT/sat/public/bower_components/lodash/vendor/underscore/test/utility.js",
+        "D:/HERNANDO/Proyectos/SAT/sat/public/js/app/controllers/riesgoController.js",
+        "D:/HERNANDO/Proyectos/SAT/sat/public/bower_components/lodash/lodash.js",
+        "D:/HERNANDO/Proyectos/SAT/sat/public/js/app/services/estrategiaService.js",
+        "D:/HERNANDO/Proyectos/SAT/sat/public/bower_components/lodash/vendor/underscore/underscore.js",
+        "D:/HERNANDO/Proyectos/SAT/sat/public/bower_components/lodash/vendor/underscore/test/objects.js"
+    ]
+}
