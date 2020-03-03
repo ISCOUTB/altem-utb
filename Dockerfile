@@ -36,6 +36,4 @@ RUN chown -R www-data:www-data /altem/
 # System clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
-RUN apache2ctl configtest
-CMD ["/usr/sbin/apache2"]
+CMD ["apachectl", "-D", "FOREGROUND"]
