@@ -32,7 +32,7 @@ RUN npm install -g -y bower bower-npm-resolver
 WORKDIR /altem/public
 RUN bower --allow-root install
 
-RUN chown -R www-data:www-data /var/www/altem/
+RUN chown -R www-data:www-data /altem/
 # System clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
