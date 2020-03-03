@@ -17,15 +17,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 #RUN apt install -y --reinstall systemd
 
 # Default site activation
-COPY ./altem.local.conf /etc/apache2/sites-available/
+COPY data/altem.conf /etc/apache2/sites-available/
 RUN a2dissite 000-default.conf
-RUN a2ensite altem.local.conf
-RUN service apache2 start
+RUN a2ensite altem.conf
 
 # Source code and libraries
 COPY --chown=www-data:www-data ./altem /altem
 WORKDIR /altem/
-RUN ls -lht /altem
 RUN composer install; composer dump-autoload
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm install -g -y bower bower-npm-resolver

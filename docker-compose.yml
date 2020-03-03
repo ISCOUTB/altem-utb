@@ -11,6 +11,9 @@ services:
   database:
     image: "mysql:5.7"
     restart: always
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./data/my.cnf:/etc/mysql/my.cnf
     environment:
       MYSQL_DATABASE: altem
       MYSQL_ROOT_PASSWORD: rootroot
