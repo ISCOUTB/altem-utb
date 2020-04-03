@@ -33,5 +33,5 @@ RUN bower --allow-root install
 RUN chown -R www-data:www-data /altem/
 # System clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
+RUN a2enmod rewrite
 CMD ["apachectl", "-D", "FOREGROUND"]
