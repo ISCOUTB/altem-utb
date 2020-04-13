@@ -25,27 +25,26 @@ class ApiAuthController extends Controller
 
     public function index()
     {
-        // = JWTAuth::parseToken()->authenticate();
-        //return response()->json($user);
-        $user = Auth::user();
-        $roles = $user->with('roles')->get()->filter(function ($item) {
+        if(Auth::check()){
             $user = Auth::user();
-            return $item->codigo == $user->id;
-        })->first();
 
-        // $permission = Permission::with('roles')->find($roles->roles->first()->id);
-        $permission = $roles->roles->first()->with('perms')->get()->first()->find($roles->roles->first()->id)->perms;
-        // $permission = Permission::with('roles')->get();
+            $roles = $user->with('roles')->get()->filter(function ($item) {
+                $user = Auth::user();
+                return strtolower($item->codigo) == strtolower($user->id);
+            })->first();
 
-        $datos = $permission->map(function ($value) {
-            return $value->name;
-        });
-        $roleData = $roles->roles->map(function ($value) {
-            return $value->name;
-        });
-        $user->rol = $roleData[0];
-        $user->permissions = $datos;
-        return response()->json($user);
+            $permission = $roles->roles->first()->with('perms')->get()->first()->find($roles->roles->first()->id)->perms;
+
+            $datos = $permission->map(function ($value) {
+                return $value->name;
+            });
+            $roleData = $roles->roles->map(function ($value) {
+                return $value->name;
+            });
+            $user->rol = $roleData[0];
+            $user->permissions = $datos;
+            return response()->json($user);
+        }
     }
 
     /**
