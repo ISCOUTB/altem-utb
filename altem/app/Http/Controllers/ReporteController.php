@@ -53,8 +53,7 @@ class ReporteController extends Controller
                 ->get();
         }
 
-        if($anio != null and $periodo == null and $riesgo ==null and $factor == null) {
-
+        if($anio && is_null($periodo) && is_null($riesgo) && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->whereYear('fecha_reporte', '=', $anio)
                 ->get();
