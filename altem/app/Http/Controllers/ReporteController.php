@@ -30,45 +30,29 @@ class ReporteController extends Controller
      */
     public function filtrarQuery(Request $request)
     {
-
         $anio = $request->input('anio');
         $periodo = $request->input('periodo');
         $riesgo = $request->input('riesgo');
         $factor = $request->input('factor');
         
-        if($periodo == 1)
-        {
-            $fecha='7';
-            $operator='<';
-        }else{
-            if($periodo == 2)
-            {
-                $fecha='6';
-                $operator='>';
-            }
-        }
+        if($periodo ){ $dateFilter = ($periodo == 1) ? 'MONTH(fecha_reporte) < 7' : 'MONTH(fecha_reporte) > 6'; }
 
-        //abc
-        if ($anio!=null and $periodo != null and $riesgo != null and $factor == null) {
-
+        if ($anio && $periodo && $riesgo && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->whereYear('fecha_reporte', '=', $anio)
-                ->where(\DB::raw('MONTH(fecha_reporte) '), $operator, $fecha)
+                ->whereRaw($dateFilter)
                 ->where('tipo_riesgos_id', '=', $riesgo)
                 ->get();
         }
         
-        //ab
-        if ($anio != null and $periodo != null and $riesgo == null and $factor == null) {
-
+        if ($anio && $periodo && is_null($riesgo) && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->whereYear('fecha_reporte', '=', $anio)
-                ->where(\DB::raw('MONTH(fecha_reporte) '), $operator, $fecha)
+                ->whereRaw($dateFilter)
                 ->get();
         }
 
-        //a
         if($anio != null and $periodo == null and $riesgo ==null and $factor == null) {
 
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
@@ -76,57 +60,45 @@ class ReporteController extends Controller
                 ->get();
         }
 
-        //b
-        if ($anio==null and $periodo != null and $riesgo == null and $factor == null) {
-
+        if (is_null($anio) && $periodo && is_null($riesgo) && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
-                ->where(\DB::raw('MONTH(fecha_reporte) '), $operator, $fecha)
+                ->whereRaw($dateFilter)
                 ->get();
         }
-
-        //c
-        if ($anio==null and $periodo == null and $riesgo != null and $factor == null) {
-
+        
+        if (is_null($anio) && is_null($periodo) && $riesgo && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->where('tipo_riesgos_id', '=', $riesgo)
                 ->get();
         }
-
-        //ac
-        if ($anio!=null and $periodo == null and $riesgo != null and $factor == null) {
-
+        
+        if ($anio && is_null($periodo) && $riesgo && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->whereYear('fecha_reporte', '=', $anio)
                 ->where('riesgos_id', '=', $factor)
                 ->get();
         }
-
-        //bc
-        if ($anio==null and $periodo != null and $riesgo != null and $factor == null) {
-
+        
+        if (is_null($anio) && $periodo && $riesgo && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
-                ->where(\DB::raw('MONTH(fecha_reporte) '), $operator, $fecha)
+                ->whereRaw($dateFilter)
                 ->where('tipo_riesgos_id', '=', $riesgo)
                 ->get();
         }
-
-        //cd
-        if ($anio==null and $periodo == null and $riesgo != null and $factor != null) {
-
+        
+        if (is_null($anio) && is_null($periodo) && $riesgo && $factor) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->where('tipo_riesgos_id', '=', $riesgo)
                 ->where('riesgos_id', '=', $factor)
                 ->get();
         }
-
-        //acd
-        if ($anio!=null and $periodo == null and $riesgo != null and $factor != null) {
-
+        
+        if ($anio && is_null($periodo) && $riesgo && $factor) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->whereYear('fecha_reporte', '=', $anio)
@@ -134,39 +106,32 @@ class ReporteController extends Controller
                 ->where('riesgos_id', '=', $factor)
                 ->get();
         }
-
-        //bcd
-        if ($anio==null and $periodo != null and $riesgo != null and $factor != null) {
-
+        
+        if (is_null($anio) && $periodo && $riesgo && $factor) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
-                ->where(\DB::raw('MONTH(fecha_reporte) '), $operator, $fecha)
+                ->whereRaw($dateFilter)
                 ->where('tipo_riesgos_id', '=', $riesgo)
                 ->where('riesgos_id', '=', $factor)
                 ->get();
         }
-
-        //abcd
-        if ($anio!=null and $periodo != null and $riesgo != null and $factor != null) {
-
+        if ($anio && $periodo && $riesgo && $factor) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->whereYear('fecha_reporte', '=', $anio)
-                ->where(\DB::raw('MONTH(fecha_reporte) '), $operator, $fecha)
+                ->whereRaw($dateFilter)
                 ->where('tipo_riesgos_id', '=', $riesgo)
                 ->where('riesgos_id', '=', $factor)
                 ->get();
         }
-
-        if ($anio==null and $periodo == null and $riesgo == null and $factor == null) {
-
+        
+        if (is_null($anio) && is_null($periodo) && is_null($riesgo) && is_null($factor)) {
             $result = ArchivoPersonal::with('estudiante_altem', 'riesgo.tiporiesgo', 'intervenciones.estrategias')
                 ->join('riesgos', 'riesgos.id', '=', 'archivo_personal.riesgos_id')
                 ->get();
         }
 
         return response()->json($result);
-
     }
 
     public function archivo_personal()
