@@ -27,22 +27,25 @@ class ApiAuthController extends Controller
     {
         if(Auth::check()){
             $user = Auth::user();
-
+            
             $roles = $user->with('roles')->get()->filter(function ($item) {
                 $user = Auth::user();
                 return strtolower($item->codigo) == strtolower($user->id);
             })->first();
+            
+            if(count($roles->roles)){ //Will need changes when permissions are added to the Database and the model is defined.
+                $permission = $roles->roles->first()->with('perms')->get()->first()->find($roles->roles->first()->id)->perms;            
 
-            $permission = $roles->roles->first()->with('perms')->get()->first()->find($roles->roles->first()->id)->perms;
-
-            $datos = $permission->map(function ($value) {
-                return $value->name;
-            });
-            $roleData = $roles->roles->map(function ($value) {
-                return $value->name;
-            });
-            $user->rol = $roleData[0];
-            $user->permissions = $datos;
+                $datos = $permission->map(function ($value) {
+                    return $value->name;
+                });
+                $roleData = $roles->roles->map(function ($value) {
+                    return $value->name;
+                });
+                $user->rol = $roleData[0];
+                $user->permissions = $datos;
+            }                
+            
             return response()->json($user);
         }
     }
