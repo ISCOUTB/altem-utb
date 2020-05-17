@@ -28,5 +28,6 @@ RUN npm install -g -y bower bower-npm-resolver; bower --allow-root install
 #VOLUME /altem /data/altem
 RUN chown -R www-data:www-data /altem/
 # System clean up
+RUN apt install nano
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 CMD ["apachectl", "-D", "FOREGROUND"]
