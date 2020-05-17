@@ -8,10 +8,11 @@
 1. Clone this repo into your machine.
 2. Add your .env file to the folder `[project-location]/altem-utb/altem`
 3. Now, navigate to `[project-location]/altem-utb`
-4. Once there, you should run the following command
+4. Put ssl files (or fake) (utb.edu.co.crt and utb.edu.co.key) on "data/ssl/" folder
+5. Once there, you should run the following command
     `docker-compose up --build`
     This will install the dependencies ofthe project over an Ubuntu image in a docker container.
-5. When this process finishes, you should be able to navigate to `localhost` in your browser, and see the Altem Login Page.
+6. When this process finishes, you should be able to navigate to `localhost` in your browser, and see the Altem Login Page.
 
 ### Edit your hosts to add a custom DNS. (Optional)
 1. Locate your `hosts` file and open it with admin permissions.
