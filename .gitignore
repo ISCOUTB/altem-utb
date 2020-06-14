@@ -20,3 +20,6 @@ Homestead.json
 .rocketeer/
 data/mysql/*
 .DS_Store
+
+# SSL data
+data/ssl/*
