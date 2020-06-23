@@ -34,16 +34,38 @@ class SavioAuth
         return $savioResponse->token;
     }
 
-    public function file_get_contents_curl($url) {
+    private function file_get_contents_curl($url) {
         $ch = curl_init();
+    
+        curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_ENCODING, 0);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST , "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        // dirty fix for SSL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    
         $data = curl_exec($ch);
+        $info = curl_getinfo($ch);
+
+        if(curl_errno($ch)) {
+            logger('Curl error: ' . curl_error($ch));
+        }
+    
         curl_close($ch);
+    
+        if ($data === FALSE) {
+            logger("curl_exec returned FALSE. Info follows:\n" . print_r($info, TRUE));
+        }
+    
         return $data;
-     }
+    }
+
 
     public function getSavioUserData($codigo) {
 
