@@ -22,7 +22,7 @@ class SavioAuth
 
         $url = "$this->savioTokenURL?username=$u&password=$p&service=moodle_mobile_app";
 
-        $authRequest = file_get_contents( $url );
+        $authRequest = $this->file_get_contents_curl( $url );
         $savioResponse = json_decode($authRequest);
 
         // if the credentials are valid, we get the token, else, we get error
@@ -34,12 +34,23 @@ class SavioAuth
         return $savioResponse->token;
     }
 
+    public function file_get_contents_curl($url) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
+     }
+
     public function getSavioUserData($codigo) {
 
         $usuario = Usuario::find($codigo);
         $token = $usuario->savio_token;
 
-        $authRequest = file_get_contents("$this->savioUserURL?wstoken=$token&wsfunction=core_webservice_get_site_info&moodlewsrestformat=json");
+        $authRequest = $this->file_get_contents_curl("$this->savioUserURL?wstoken=$token&wsfunction=core_webservice_get_site_info&moodlewsrestformat=json");
         $savioResponse = json_decode($authRequest);
 
         // if the token is valid, we get the userid, else, we get error
