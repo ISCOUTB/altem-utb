@@ -25,27 +25,29 @@ class ApiAuthController extends Controller
 
     public function index()
     {
-        // = JWTAuth::parseToken()->authenticate();
-        //return response()->json($user);
-        $user = Auth::user();
-        $roles = $user->with('roles')->get()->filter(function ($item) {
+        if(Auth::check()){
             $user = Auth::user();
-            return $item->codigo == $user->id;
-        })->first();
+            
+            $roles = $user->with('roles')->get()->filter(function ($item) {
+                $user = Auth::user();
+                return strtolower($item->codigo) == strtolower($user->id);
+            })->first();
+            
+            if(count($roles->roles)){ //Will need changes when permissions are added to the Database and the model is defined.
+                $permission = $roles->roles->first()->with('perms')->get()->first()->find($roles->roles->first()->id)->perms;            
 
-        // $permission = Permission::with('roles')->find($roles->roles->first()->id);
-        $permission = $roles->roles->first()->with('perms')->get()->first()->find($roles->roles->first()->id)->perms;
-        // $permission = Permission::with('roles')->get();
-
-        $datos = $permission->map(function ($value) {
-            return $value->name;
-        });
-        $roleData = $roles->roles->map(function ($value) {
-            return $value->name;
-        });
-        $user->rol = $roleData[0];
-        $user->permissions = $datos;
-        return response()->json($user);
+                $datos = $permission->map(function ($value) {
+                    return $value->name;
+                });
+                $roleData = $roles->roles->map(function ($value) {
+                    return $value->name;
+                });
+                $user->rol = $roleData[0];
+                $user->permissions = $datos;
+            }                
+            
+            return response()->json($user);
+        }
     }
 
     /**
